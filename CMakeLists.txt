@@ -1,0 +1,3 @@
+PROJECT(genfunop)
+
+ADD_SUBDIRECTORY( src )
