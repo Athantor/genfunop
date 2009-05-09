@@ -31,15 +31,20 @@ void Chromosome::set_gene(size_t chrom, size_t gene, bool gval)
 		genes[chrom] |= (tmp << gene);
 }
 
+void Chromosome::set_gene(size_t chrom, gene_t::value_type newval)
+{
+	genes[chrom] = newval;
+}
+
 void Chromosome::add_chrom(gene_t::value_type newval)
 {
 	genes.push_back(newval);
 }
 
-Chromosome::gene_t::value_type Chromosome::del_chrom(size_t genno)
+Chromosome::gene_t::value_type Chromosome::del_chrom(size_t chromno)
 {
-	gene_t::value_type ret = genes[genno];
-	genes.erase(genes.begin() + genno);
+	gene_t::value_type ret = genes[chromno];
+	genes.erase(genes.begin() + chromno);
 
 	return ret;
 }
