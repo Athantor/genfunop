@@ -9,7 +9,8 @@
 #define CHROMOSOME_H_
 
 #include <vector>
-#include <stdint.h>
+#include <boost/cstdint.hpp>
+#include <cstddef>
 
 class Chromosome {
 public:
@@ -17,6 +18,12 @@ public:
 	virtual ~Chromosome();
 
 	typedef std::vector<uint64_t> gene_t;
+
+	bool get_gene(size_t, size_t) const;
+	void set_gene(size_t, size_t, bool);
+
+	void add_chrom(gene_t::value_type = 0);
+	gene_t::value_type del_chrom(size_t);
 
 protected:
 	gene_t genes;
