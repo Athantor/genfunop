@@ -32,8 +32,14 @@ class World
 			return pops;
 		}
 
+		virtual fitfun_t get_fitfun() const
+		{
+			return fitfun;
+		}
+
 	protected:
 		 pop_t pops;
+		 fitfun_t fitfun;
 
 };
 
