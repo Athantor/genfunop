@@ -3,6 +3,7 @@ SET(SRCS
 	World
 	Population
 	Creature
+	Chromosome
 )
 
 
