@@ -63,11 +63,9 @@ void Chromosome::Randomize_genes()
 void Chromosome::Randomize_gene( size_t chrom )
 {
 	genes[chrom] = 0;
-	for(size_t j = 0; j < (sizeof(gene_t::value_type) / sizeof(uint32_t)); ++j)
-	{
-		genes[chrom] |= static_cast<uint32_t> (random());
-		genes[chrom] <<= 32;
-	}
+	genes[chrom] |= static_cast<uint32_t> (random());
+	genes[chrom] <<= 32;
+	genes[chrom] |= static_cast<uint32_t> (random());
 }
 
 Chromosome::gene_t::value_type Chromosome::del_chrom( size_t chromno )
