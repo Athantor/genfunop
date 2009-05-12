@@ -6,11 +6,11 @@ SET(CMAKE_CXX_FLAGS " $ENV{CFLAGS} -std=gnu++0x -Wall -Wextra -pedantic ")
 SET(CMAKE_CXX_FLAGS_DEBUG " -O0 -g3 -ggdb3 ")
 SET(CMAKE_CXX_FLAGS_RELEASE " $ENV{CXXFLAGS} -O2 -fomit-frame-pointer ")  
 
-find_package( Boost 1.37.0 )
+find_package( Boost )
    if(Boost_FOUND)
       include_directories(${Boost_INCLUDE_DIRS})
 else()
-	message(FATAL_ERROR "No boost")
+	message(FATAL_ERROR "No boost libs")
 endif()
 
 INCLUDE(TestForSTDNamespace)
