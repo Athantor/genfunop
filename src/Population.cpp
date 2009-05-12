@@ -9,7 +9,7 @@
 
 #include "Population.h"
 
-Population::Population(weak_ptr<World> w)
+Population::Population(weak_ptr<World> w) : world(w)
 {
 	// TODO Auto-generated constructor stub
 
