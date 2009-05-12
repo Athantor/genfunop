@@ -18,4 +18,6 @@ IF( CMAKE_NO_STD_NAMESPACE )
 	message(FATAL_ERROR "No 'std::' namespace support")
 endif()
 
+SET(EXECUTABLE_OUTPUT_PATH ".") 
+
 ADD_SUBDIRECTORY( src )
