@@ -48,11 +48,6 @@ void Chromosome::add_chrom( gene_t::value_type newval )
  */
 void Chromosome::Randomize_genes()
 {
-	timeval tv = { 0, 0 };
-	gettimeofday(&tv, 0);
-
-	srandom(tv.tv_sec + tv.tv_usec);
-
 	for(size_t i = 0; i < genes.size(); ++i)
 	{
 		Randomize_gene(i);
@@ -62,6 +57,11 @@ void Chromosome::Randomize_genes()
 
 void Chromosome::Randomize_gene( size_t chrom )
 {
+	timeval tv = { 0, 0 };
+	gettimeofday(&tv, 0);
+
+	srandom(tv.tv_sec + tv.tv_usec);
+
 	genes[chrom] = 0;
 	genes[chrom] |= static_cast<uint32_t> (random());
 	genes[chrom] <<= 32;
