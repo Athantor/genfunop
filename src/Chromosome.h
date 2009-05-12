@@ -11,6 +11,7 @@
 #include <vector>
 #include <boost/cstdint.hpp>
 #include <cstddef>
+#include <sys/time.h> //gettimeofday
 
 class Chromosome {
 public:
@@ -22,6 +23,8 @@ public:
 	bool get_gene(size_t, size_t) const;
 	void set_gene(size_t, size_t, bool);
 	void set_gene(size_t, gene_t::value_type);
+
+	void Randomize_genes();
 
 	void add_chrom(gene_t::value_type = 0);
 	gene_t::value_type del_chrom(size_t);
