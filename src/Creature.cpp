@@ -12,7 +12,6 @@
 Creature::Creature()
 {
 	// TODO Auto-generated constructor stub
-
 }
 
 Creature::~Creature()
