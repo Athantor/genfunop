@@ -1,5 +1,3 @@
-SET(CMAKE_CXX_FLAGS "-std=gnu++98 -Wall -Wextra " )
-
 SET(SRCS 
 	genfunop
 	World
