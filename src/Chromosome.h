@@ -24,6 +24,7 @@ public:
 	void set_gene(size_t, size_t, bool);
 	void set_gene(size_t, gene_t::value_type);
 
+	void Randomize_gene(size_t);
 	void Randomize_genes();
 
 	void add_chrom(gene_t::value_type = 0);
