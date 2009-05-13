@@ -7,8 +7,8 @@
 
 #include "Chromosome.h"
 
-Chromosome::Chromosome() :
-	CHROMOSOME_SIZE(CHROMSIZE)
+Chromosome::Chromosome( size_t as ) :
+	CHROMOSOME_SIZE(CHROMSIZE), ALLELE_SIZE(as)
 {
 	// TODO Auto-generated constructor stub
 
@@ -29,12 +29,12 @@ void Chromosome::set_gene( size_t chrom, size_t gene, bool gval )
 	genes[chrom][gene] = gval;
 }
 
-void Chromosome::set_gene( size_t chrom, gene_t::value_type newval )
+void Chromosome::set_gene( size_t chrom, genes_t::value_type newval )
 {
 	genes[chrom] = newval;
 }
 
-void Chromosome::add_gene( gene_t::value_type newval )
+void Chromosome::add_gene( genes_t::value_type newval )
 {
 	genes.push_back(newval);
 }
@@ -64,11 +64,22 @@ void Chromosome::Randomize_gene( size_t chrom )
 
 }
 
-Chromosome::gene_t::value_type Chromosome::del_gene( size_t chromno )
+Chromosome::genes_t::value_type Chromosome::del_gene( size_t chromno )
 {
-	gene_t::value_type ret = genes[chromno];
+	genes_t::value_type ret = genes[chromno];
 	genes.erase(genes.begin() + chromno);
 
 	return ret;
+}
+
+Chromosome::gene_t Chromosome::get_allele( size_t gene , size_t bstart ) const
+{
+	gene_t tmp(std::string(ALLELE_SIZE, '1'));
+	tmp <<= bstart;
+	tmp &= genes[gene];
+	tmp >>= bstart;
+
+	return tmp;
+
 }
 

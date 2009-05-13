@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <sys/time.h> //gettimeofday
 #include <bitset>
+#include <stdexcept>
 
 static inline uint64_t frand( uint64_t max = RAND_MAX )
 {
@@ -22,25 +23,30 @@ static inline uint64_t frand( uint64_t max = RAND_MAX )
 class Chromosome
 {
 	public:
-		Chromosome();
+		Chromosome(size_t = CHROMSIZE/2);
 		virtual ~Chromosome();
 
 		const size_t CHROMOSOME_SIZE;
+		const size_t ALLELE_SIZE;
 
-		typedef std::vector<std::bitset<CHROMSIZE> > gene_t;
+		typedef std::bitset<CHROMSIZE> gene_t;
+		typedef std::vector< gene_t > genes_t;
 
 		bool get_gene( size_t, size_t ) const;
 		void set_gene( size_t, size_t, bool );
-		void set_gene( size_t, gene_t::value_type );
+		void set_gene( size_t, genes_t::value_type );
 
 		void Randomize_gene( size_t );
 		void Randomize_genes();
 
-		void add_gene( gene_t::value_type = 0 );
-		gene_t::value_type del_gene( size_t );
+		void add_gene( genes_t::value_type = 0 );
+		genes_t::value_type del_gene( size_t );
+
+		gene_t get_allele(size_t = 0, size_t = 0) const;
+
 
 	protected:
-		gene_t genes;
+		genes_t genes;
 };
 
 #endif /* CHROMOSOME_H_ */
