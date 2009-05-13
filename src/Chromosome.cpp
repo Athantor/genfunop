@@ -7,7 +7,8 @@
 
 #include "Chromosome.h"
 
-Chromosome::Chromosome()
+Chromosome::Chromosome() :
+	CHROMOSOME_SIZE(CHROMSIZE)
 {
 	// TODO Auto-generated constructor stub
 
@@ -20,17 +21,12 @@ Chromosome::~Chromosome()
 
 bool Chromosome::get_gene( size_t chrom, size_t gene ) const
 {
-	return (genes[chrom] >> gene) & 0x1;
+	return genes[chrom][gene];
 }
 
 void Chromosome::set_gene( size_t chrom, size_t gene, bool gval )
 {
-	gene_t::value_type tmp = gval;
-
-	if(!gval)
-		genes[chrom] &= ~(tmp << gene);
-	else
-		genes[chrom] |= (tmp << gene);
+	genes[chrom][gene] = gval;
 }
 
 void Chromosome::set_gene( size_t chrom, gene_t::value_type newval )
@@ -38,7 +34,7 @@ void Chromosome::set_gene( size_t chrom, gene_t::value_type newval )
 	genes[chrom] = newval;
 }
 
-void Chromosome::add_chrom( gene_t::value_type newval )
+void Chromosome::add_gene( gene_t::value_type newval )
 {
 	genes.push_back(newval);
 }
@@ -60,15 +56,15 @@ void Chromosome::Randomize_gene( size_t chrom )
 	timeval tv = { 0, 0 };
 	gettimeofday(&tv, 0);
 
-	srandom(tv.tv_sec + tv.tv_usec);
+	srand(tv.tv_sec + tv.tv_usec);
+	for(size_t i = 0; i < genes[chrom].size(); ++i)
+	{
+		genes[chrom][i] = frand() % 2;
+	}
 
-	genes[chrom] = 0;
-	genes[chrom] |= static_cast<uint32_t> (random());
-	genes[chrom] <<= 32;
-	genes[chrom] |= static_cast<uint32_t> (random());
 }
 
-Chromosome::gene_t::value_type Chromosome::del_chrom( size_t chromno )
+Chromosome::gene_t::value_type Chromosome::del_gene( size_t chromno )
 {
 	gene_t::value_type ret = genes[chromno];
 	genes.erase(genes.begin() + chromno);

@@ -12,26 +12,35 @@
 #include <boost/cstdint.hpp>
 #include <cstddef>
 #include <sys/time.h> //gettimeofday
+#include <bitset>
 
-class Chromosome {
-public:
-	Chromosome();
-	virtual ~Chromosome();
+static inline uint64_t frand( uint64_t max = RAND_MAX )
+{
+	return static_cast<double> (rand()) / ((static_cast<double> (RAND_MAX) + 1.0) / (static_cast<double> (max)));
+}
 
-	typedef std::vector<uint64_t> gene_t;
+class Chromosome
+{
+	public:
+		Chromosome();
+		virtual ~Chromosome();
 
-	bool get_gene(size_t, size_t) const;
-	void set_gene(size_t, size_t, bool);
-	void set_gene(size_t, gene_t::value_type);
+		const size_t CHROMOSOME_SIZE;
 
-	void Randomize_gene(size_t);
-	void Randomize_genes();
+		typedef std::vector<std::bitset<CHROMSIZE> > gene_t;
 
-	void add_chrom(gene_t::value_type = 0);
-	gene_t::value_type del_chrom(size_t);
+		bool get_gene( size_t, size_t ) const;
+		void set_gene( size_t, size_t, bool );
+		void set_gene( size_t, gene_t::value_type );
 
-protected:
-	gene_t genes;
+		void Randomize_gene( size_t );
+		void Randomize_genes();
+
+		void add_gene( gene_t::value_type = 0 );
+		gene_t::value_type del_gene( size_t );
+
+	protected:
+		gene_t genes;
 };
 
 #endif /* CHROMOSOME_H_ */
