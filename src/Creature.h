@@ -13,16 +13,22 @@
 #include <vector>
 #include <utility>
 #include <cmath>
+#include <cstddef>
 
+#include <boost/shared_ptr.hpp>
+
+#include "Population.h"
 #include "Chromosome.h"
 
+class Chromosome;
+class Population;
 class Creature
 {
 	public:
-		Creature();
+		Creature(Population *, size_t = 1);
 		virtual ~Creature();
 
-		typedef std::vector<Chromosome> chroms_t;
+		typedef std::vector<boost::shared_ptr<Chromosome> > chroms_t;
 		typedef std::pair<double, double> domain_t;
 
 		void set_bounds(domain_t::first_type, domain_t::second_type);
@@ -30,9 +36,13 @@ class Creature
 
 		double get_phenotype(size_t , size_t, size_t = 0 ) const;
 
+		virtual double Evaluate_fitness() ;
+
 	protected:
 		chroms_t chroms;
 		domain_t domain;
+
+		Population* pntpop;
 
 };
 

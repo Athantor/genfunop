@@ -9,11 +9,13 @@
 #define CHROMOSOME_H_
 
 #include <vector>
-#include <boost/cstdint.hpp>
 #include <cstddef>
 #include <sys/time.h> //gettimeofday
 #include <bitset>
 #include <stdexcept>
+
+#include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
 
 static inline uint64_t frand( uint64_t max = RAND_MAX )
 {
@@ -23,7 +25,7 @@ static inline uint64_t frand( uint64_t max = RAND_MAX )
 class Chromosome
 {
 	public:
-		Chromosome(size_t = CHROMSIZE/2);
+		Chromosome(size_t = 1, size_t = CHROMSIZE/2);
 		virtual ~Chromosome();
 
 		const size_t CHROMOSOME_SIZE;
@@ -43,6 +45,7 @@ class Chromosome
 		genes_t::value_type del_gene( size_t );
 
 		gene_t get_allele(size_t = 0, size_t = 0) const;
+		gene_t get_whole_chrom(size_t = 0) const;
 
 
 	protected:

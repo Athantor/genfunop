@@ -7,10 +7,15 @@
 
 #include "Chromosome.h"
 
-Chromosome::Chromosome( size_t as ) :
+Chromosome::Chromosome( size_t g, size_t as ) :
 	CHROMOSOME_SIZE(CHROMSIZE), ALLELE_SIZE(as)
 {
-	// TODO Auto-generated constructor stub
+	for(size_t i = 0; i < g; ++i)
+	{
+		add_gene();
+	}
+
+	Randomize_genes();
 
 }
 
@@ -48,7 +53,6 @@ void Chromosome::Randomize_genes()
 	{
 		Randomize_gene(i);
 	}
-
 }
 
 void Chromosome::Randomize_gene( size_t chrom )
@@ -80,6 +84,10 @@ Chromosome::gene_t Chromosome::get_allele( size_t gene , size_t bstart ) const
 	tmp >>= bstart;
 
 	return tmp;
+}
 
+Chromosome::gene_t Chromosome::get_whole_chrom(size_t  g) const
+{
+	return genes[g];
 }
 

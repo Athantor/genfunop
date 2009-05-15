@@ -49,7 +49,7 @@ namespace util
 				std::string getMsg_txt() const;
 				M_Level getMsg_lvl() const;
 
-				Msg operator+(const char *);
+				//Msg operator+(const char *);
 				Msg operator+(const std::string &);
 				Msg operator+(long long);
 				Msg operator+(double);

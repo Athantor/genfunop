@@ -9,11 +9,8 @@
 
 #include "World.h"
 
-
-World::World()
+World::World(  ) : LOGFILE(new util::logging::File_logger())
 {
-	// TODO Auto-generated constructor stub
-
 }
 
 World::~World()

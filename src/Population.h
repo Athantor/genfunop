@@ -10,28 +10,32 @@
 #ifndef POPULATION_H_
 #define POPULATION_H_
 
-#include <boost/weak_ptr.hpp>
+#include <vector>
+#include <cstddef>
+
+#include <boost/shared_ptr.hpp>
 
 #include "World.h"
 #include "Creature.h"
 
-#include <vector>
+using boost::shared_ptr;
 
-using boost::weak_ptr;
-
+class Creature;
 class World;
 class Population
 {
 	public:
-		Population(weak_ptr<World> w);
+		Population(World * w, size_t = 100);
 		virtual ~Population();
 
-		typedef std::vector<Creature> creat_t;
+		typedef std::vector<shared_ptr<Creature> > creat_t;
 
-		virtual void Evaluate_fitness();
+		virtual double Evaluate_fitness();
+
+		const World * get_world() const;
 
 	protected:
-		weak_ptr<World> world;
+		World * world;
 		creat_t creats;
 };
 

@@ -11,11 +11,16 @@
 #define WORLD_H_
 
 #include <vector>
+#include <cstddef>
+
 #include <boost/any.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "Population.h"
+#include "util/liblog/File_logger.h"
 
 using boost::any;
+using boost::shared_ptr;
 
 class Population;
 class World
@@ -24,10 +29,10 @@ class World
 		World();
 		virtual ~World();
 
-		typedef double (*fitfun_t)(const std::vector<any>&);
-		typedef std::vector<Population> pop_t;
+		typedef double (*fitfun_t)( const std::vector<any>& );
+		typedef std::vector<shared_ptr<Population> > pop_t;
 
-		virtual void Evaluate_fitness() = 0;
+		virtual double Evaluate_fitness() = 0;
 
 		virtual const pop_t& Get_pop()
 		{
@@ -39,9 +44,16 @@ class World
 			return fitfun;
 		}
 
+		boost::shared_ptr<util::logging::File_logger> get_log() const
+		{
+			return LOGFILE;
+		}
+
 	protected:
-		 pop_t pops;
-		 fitfun_t fitfun;
+		pop_t pops;
+		fitfun_t fitfun;
+
+		boost::shared_ptr<util::logging::File_logger> LOGFILE;
 
 };
 

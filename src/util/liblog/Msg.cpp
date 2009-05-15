@@ -52,10 +52,10 @@ namespace util
 			return msg_lvl;
 		}
 
-		Msg Msg::operator+( const char * val)
+		/*Msg Msg::operator+( const char * val)
 		{
 			return operator+(std::string(val));
-		}
+		}*/
 
 		Msg Msg::operator+( const std::string & val)
 		{
