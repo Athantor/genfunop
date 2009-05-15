@@ -1,3 +1,5 @@
+ADD_SUBDIRECTORY( util )
+
 SET(SRCS 
 	genfunop
 	World
@@ -16,4 +18,9 @@ endif()
 
 add_definitions(-DCHROMSIZE=${CHROMSIZE})
 
+link_directories(util/liblog)
+
 ADD_EXECUTABLE(genfunop ${SRCS} )
+target_link_libraries(genfunop log)
+
+add_dependencies(genfunop log)
