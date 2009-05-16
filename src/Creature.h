@@ -39,8 +39,13 @@ class Creature
 		virtual double Evaluate_fitness() ;
 
 	protected:
+
+		double make_fitness();
+
 		chroms_t chroms;
 		domain_t domain;
+
+		double fitness;
 
 		Population* pntpop;
 
