@@ -10,7 +10,7 @@
 #include "Creature.h"
 
 Creature::Creature( Population * pop, size_t chromnom ) :
-	pntpop(pop)
+	pntpop(pop), dead(false)
 {
 	for(size_t i = 0; i < chromnom; ++i)
 	{
@@ -95,4 +95,13 @@ double Creature::make_fitness()
 
 	return ret;
 
+}
+
+void Creature::kill(bool k)
+{
+	dead = k;
+}
+bool Creature::is_dead() const
+{
+	return dead;
 }

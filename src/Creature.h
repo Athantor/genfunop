@@ -38,6 +38,9 @@ class Creature
 
 		virtual double Evaluate_fitness() ;
 
+		void kill(bool = true);
+		bool is_dead() const;
+
 	protected:
 
 		double make_fitness();
@@ -48,6 +51,8 @@ class Creature
 		double fitness;
 
 		Population* pntpop;
+
+		bool dead; ///< denotes if creature is part of next generation
 
 };
 

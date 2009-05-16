@@ -43,3 +43,30 @@ const Population::creat_t& Population::get_creatures() const
 {
 	return creats;
 }
+
+
+boost::shared_ptr<Population> Population::perform_selection(SEL_TYPE sel)
+{
+	switch(sel)
+	{
+		case S_TOURNAMENT:
+			return tournament_selection();
+			break;
+		default:
+			throw std::runtime_error("Unknown selection type");
+			break;
+	}
+}
+
+boost::shared_ptr<Population> Population::tournament_selection(size_t k)
+{
+	boost::shared_ptr<Population> newpop( new Population(world, 0) );
+
+	for(size_t i = 0; i < creats.size(); i += k)
+	{
+
+	}
+
+	return newpop;
+
+}
