@@ -9,11 +9,12 @@
 
 #include "Population.h"
 
-Population::Population(World * w, size_t creatno) : world(w)
+Population::Population( World * w, size_t creatno ) :
+	world(w)
 {
 	for(size_t i = 0; i < creatno; ++i)
 	{
-		creats.push_back( boost::shared_ptr<Creature>(new Creature(this)) );
+		creats.push_back(boost::shared_ptr<Creature>(new Creature(this)));
 	}
 }
 
@@ -36,4 +37,9 @@ double Population::Evaluate_fitness()
 const World * Population::get_world() const
 {
 	return world;
+}
+
+const Population::creat_t& Population::get_creatures() const
+{
+	return creats;
 }

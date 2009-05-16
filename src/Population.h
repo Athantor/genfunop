@@ -33,6 +33,7 @@ class Population
 		virtual double Evaluate_fitness();
 
 		const World * get_world() const;
+		const creat_t& get_creatures() const;
 
 	protected:
 		World * world;

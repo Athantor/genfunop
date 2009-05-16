@@ -52,6 +52,8 @@ double Creature::Evaluate_fitness()
 	if(!wld)
 		return 0;
 
+	double ret = 0, tmp = 0;
+
 	for(size_t h = 0; h < chroms.size(); ++h)
 	{
 		boost::shared_ptr<Chromosome> chr = chroms[h];
@@ -63,13 +65,16 @@ double Creature::Evaluate_fitness()
 			av.push_back(x1);
 			av.push_back(x2);
 
+			tmp = (wld->get_fitfun())(av);
+
 			(*wld->get_log()) << util::logging::Msg(chr->get_whole_chrom().to_string()) + " | "
 					+ (long long) (chr->get_whole_chrom().to_ulong()) + " | " + x1 + " | " + x2 + " | "
-					+ (wld->get_fitfun())(av);
-		}
+					+ tmp ;
 
+			ret += tmp;
+		}
 	}
 
-	return 0;
+	return ret;
 
 }

@@ -41,10 +41,17 @@ double World_3df::fun3d( const std::vector<any>& args )
 
 double World_3df::Evaluate_fitness()
 {
-	double ret = 0;
+	double ret = 0, tmp = 0;
+	size_t ctr = 0;
 	for(pop_t::iterator it = pops.begin(); it != pops.end(); ++it)
 	{
-		ret += (*it)->Evaluate_fitness();
+		tmp = (*it)->Evaluate_fitness();
+
+		(*get_log()) << util::logging::Msg(std::string(15, '-') + " Fitnes populacji nr") + static_cast<long long> (ctr)
+				+ " (" + static_cast<long long> ((*it)->get_creatures().size()) + ")  = " + tmp;
+
+		ctr++;
+		ret += tmp;
 
 	}
 
