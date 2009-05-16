@@ -32,9 +32,17 @@ namespace util
 			Ostream_logger(fmt, l), logfile_path(p), logfile(new std::ofstream())
 		{
 			logfile->exceptions(std::ofstream::eofbit | std::ofstream::failbit | std::ofstream::badbit);
-			logfile->open(logfile_path.c_str(), std::ofstream::app);
 
-			set_stream(logfile);
+			try
+			{
+				logfile->open(logfile_path.c_str(), std::ofstream::app);
+
+				set_stream(logfile);
+			}
+			catch(const std::ofstream::failure &e)
+			{
+				throw std::ofstream::failure("Error opening log file '" + p + "': " + e.what());
+			}
 
 		}
 
