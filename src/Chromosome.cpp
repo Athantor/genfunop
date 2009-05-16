@@ -91,3 +91,10 @@ Chromosome::gene_t Chromosome::get_whole_chrom(size_t  g) const
 	return genes[g];
 }
 
+const Chromosome::genes_t & Chromosome::get_genes() const
+{
+	return genes;
+}
+
+
+

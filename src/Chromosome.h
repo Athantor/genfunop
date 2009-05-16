@@ -47,6 +47,8 @@ class Chromosome
 		gene_t get_allele(size_t = 0, size_t = 0) const;
 		gene_t get_whole_chrom(size_t = 0) const;
 
+		const genes_t& get_genes() const;
+
 
 	protected:
 		genes_t genes;

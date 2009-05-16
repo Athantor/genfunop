@@ -52,17 +52,21 @@ double Creature::Evaluate_fitness()
 	if(!wld)
 		return 0;
 
-	for(chroms_t::const_iterator it = chroms.begin(); it != chroms.end(); ++it)
+	for(size_t h = 0; h < chroms.size(); ++h)
 	{
-		boost::shared_ptr<Chromosome> chr = *it;
+		boost::shared_ptr<Chromosome> chr = chroms[h];
 
-		double x1 = get_phenotype(0, 0, 0) , x2 = get_phenotype(0, 0, 25);
-		std::vector<any> av;
-		av.push_back(x1);
-		av.push_back(x2);
+		for(size_t i = 0; i < chr->get_genes().size(); ++i)
+		{
+			double x1 = get_phenotype(h, i, 0), x2 = get_phenotype(0, 0, chr->ALLELE_SIZE);
+			std::vector<any> av;
+			av.push_back(x1);
+			av.push_back(x2);
 
-		(*wld->get_log()) << util::logging::Msg(chr->get_whole_chrom().to_string()) + " | "
-				+ (long long) (chr->get_whole_chrom().to_ulong()) + " | " + x1 + " | " + x2 + " | " + (wld->get_fitfun())(av)  ;
+			(*wld->get_log()) << util::logging::Msg(chr->get_whole_chrom().to_string()) + " | "
+					+ (long long) (chr->get_whole_chrom().to_ulong()) + " | " + x1 + " | " + x2 + " | "
+					+ (wld->get_fitfun())(av);
+		}
 
 	}
 
