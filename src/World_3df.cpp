@@ -13,7 +13,7 @@ World_3df::World_3df( size_t ps, size_t popsize )
 
 	for(size_t i = 0; i < ps; ++i)
 	{
-		pops.push_back(boost::shared_ptr<Population>(new Population(this, popsize)));
+		pops.push_back(boost::shared_ptr<Population>(new Population(this, popsize, std::ceil(popsize * 0.05))));
 	}
 
 }
@@ -47,8 +47,9 @@ double World_3df::Evaluate_fitness()
 	{
 		tmp = (*it)->Evaluate_fitness();
 
-		(*get_log()) << util::logging::Msg(std::string(15, '-') + " Fitnes populacji nr") + static_cast<long long> (ctr)
-				+ " (" + static_cast<long long> ((*it)->get_creatures().size()) + ")  = " + tmp;
+		(*get_log()) << util::logging::Msg(std::string(15, '-') + " Fitnes populacji nr")
+				+ static_cast<long long> (ctr) + " (" + static_cast<long long> ((*it)->get_creatures().size())
+				+ ")  = " + tmp;
 
 		ctr++;
 		ret += tmp;
@@ -58,3 +59,70 @@ double World_3df::Evaluate_fitness()
 	return ret;
 
 }
+
+void World_3df::tng()
+{
+
+	pop_t newpops(pops.size());
+
+	for(pop_t::iterator it = pops.begin(); it != pops.end(); ++it)
+	{
+		//boost::shared_ptr<Population> selpop;
+	}
+}
+
+void World_3df::perform_selection( boost::shared_ptr<Population>& src, boost::shared_ptr<Population>& dst, SEL_TYPE sel )
+{
+
+	save_elite(src, dst);
+
+	switch(sel)
+	{
+		case S_TOURNAMENT:
+			tournament_selection(src, dst);
+			break;
+		default:
+			throw std::runtime_error("Unknown selection type");
+			break;
+	}
+
+}
+
+void World_3df::tournament_selection( boost::shared_ptr<Population>& src, boost::shared_ptr<Population>& dst )
+{
+	const size_t start = dst->get_creatures().size();
+	const size_t stop = src->get_creatures().size();
+
+	/*
+	 * Creates array with three random indexes, then array with  fitness values of creatures t corresponding
+	 * indexes, then finds maximum element in that, computes index value from distance and finally ads the creature
+	 */
+	for(size_t i = 0; i < stop - start; ++i)
+	{
+		const size_t WAT = 3; //< for control
+
+		size_t idx[WAT] = { (start + frand(stop - start)), (start + frand(stop - start)), (start + frand(stop - start)) };
+		double ivals[WAT] = { src->get_creatures_fdict()[idx[0]], src->get_creatures_fdict()[idx[1]],
+				src->get_creatures_fdict()[idx[2]] };
+
+		dst->add_creature(*(src->get_creatures()[idx[std::distance(ivals, std::max_element(ivals, ivals + WAT))]]));
+	}
+
+}
+
+void World_3df::save_elite( shared_ptr<Population>& src, boost::shared_ptr<Population>& dst )
+{
+	Population::creatfitdict_t tmp(src->get_creatures_fdict());
+	Population::creat_t tmps(src->get_creatures());
+
+	for(size_t i = 0; i < src->ELITE_SIZE; ++i)
+	{
+		Population::creatfitdict_t::iterator mxit = max_element(tmp.begin(), tmp.end());
+		size_t dist = std::distance(tmp.begin(), mxit);
+
+		dst->add_creature(*tmps[dist]);
+		tmps.erase(tmps.begin() + dist);
+		tmp.erase(tmp.begin() + dist);
+	}
+}
+

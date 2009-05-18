@@ -9,12 +9,15 @@
 
 #include "Population.h"
 
-Population::Population( World * w, size_t creatno ) :
-	world(w)
+Population::Population( World * w, size_t creatno, size_t els ) :
+	ELITE_SIZE(els), world(w)
 {
 	for(size_t i = 0; i < creatno; ++i)
 	{
-		creats.push_back(boost::shared_ptr<Creature>(new Creature(this)));
+		boost::shared_ptr<Creature> nc(new Creature(this));
+		creats.push_back(nc);
+		fitdict.push_back(nc->get_fitness());
+
 	}
 }
 
@@ -45,28 +48,15 @@ const Population::creat_t& Population::get_creatures() const
 }
 
 
-boost::shared_ptr<Population> Population::perform_selection(SEL_TYPE sel)
+const Population::creatfitdict_t & Population::get_creatures_fdict() const
 {
-	switch(sel)
-	{
-		case S_TOURNAMENT:
-			return tournament_selection();
-			break;
-		default:
-			throw std::runtime_error("Unknown selection type");
-			break;
-	}
+	return fitdict;
 }
 
-boost::shared_ptr<Population> Population::tournament_selection(size_t k)
+void Population::add_creature( const Creature& crt )
 {
-	boost::shared_ptr<Population> newpop( new Population(world, 0) );
+	boost::shared_ptr<Creature> nc(new Creature(crt));
+	creats.push_back(nc);
 
-	for(size_t i = 0; i < creats.size(); i += k)
-	{
-
-	}
-
-	return newpop;
-
+	fitdict.push_back(nc->get_fitness());
 }

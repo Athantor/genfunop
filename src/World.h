@@ -31,12 +31,31 @@ class World
 
 		typedef double (*fitfun_t)( const std::vector<any>& );
 		typedef std::vector<shared_ptr<Population> > pop_t;
+		typedef std::vector<pop_t> oldpop_t;
+
+		enum SEL_TYPE
+		{
+			S_TOURNAMENT
+		};
 
 		virtual double Evaluate_fitness() = 0;
 
 		virtual const pop_t& Get_pop()
 		{
 			return pops;
+		}
+
+		virtual const oldpop_t& Get_oldpops()
+		{
+			return oldpops;
+		}
+
+		virtual void swap_pop( pop_t& pop )
+		{
+			oldpops.push_back(pops);
+
+			pops.clear();
+			pops = pop;
 		}
 
 		virtual fitfun_t get_fitfun() const
@@ -49,8 +68,16 @@ class World
 			return LOGFILE;
 		}
 
+		virtual void tng() = 0;
+
 	protected:
+
+		virtual void perform_selection( boost::shared_ptr<Population>&,  boost::shared_ptr<Population>& , SEL_TYPE = S_TOURNAMENT ) = 0;
+		virtual void tournament_selection( boost::shared_ptr<Population>&, boost::shared_ptr<Population>& ) = 0;
+		virtual void save_elite( shared_ptr<Population>& , boost::shared_ptr<Population>& ) = 0;
+
 		pop_t pops;
+		oldpop_t oldpops;
 		fitfun_t fitfun;
 
 		boost::shared_ptr<util::logging::File_logger> LOGFILE;

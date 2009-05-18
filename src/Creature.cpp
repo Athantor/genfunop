@@ -105,3 +105,19 @@ bool Creature::is_dead() const
 {
 	return dead;
 }
+
+bool Creature::operator<(const Creature& cr) const
+{
+	return fitness < cr.fitness;
+}
+
+bool Creature::operator<( const boost::shared_ptr<Creature>& ptr) const
+{
+	return fitness < ptr->fitness;
+}
+
+bool Creature::operator>( const boost::shared_ptr<Creature>& ptr) const
+{
+	return fitness > ptr->fitness;
+}
+

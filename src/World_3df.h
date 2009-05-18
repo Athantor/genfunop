@@ -10,8 +10,15 @@
 
 #include <vector>
 #include <cmath>
+#include <stdexcept>
+#include <iterator>
+#include <utility>
+#include <algorithm>
 
 #include <boost/any.hpp>
+#include <boost/shared_ptr.hpp>
+
+
 
 #include "World.h"
 
@@ -26,9 +33,14 @@ class World_3df : public World
 		virtual double Evaluate_fitness();
 		//virtual fitfun_t get_fitfun() const;
 
+		virtual void tng();
+
 	protected:
 		static double fun3d( const std::vector<any>& );
 
+		virtual void perform_selection( boost::shared_ptr<Population>&,  boost::shared_ptr<Population>&, SEL_TYPE = S_TOURNAMENT );
+		virtual void tournament_selection( boost::shared_ptr<Population>&, boost::shared_ptr<Population>& ) ;
+		virtual void save_elite( shared_ptr<Population>& , boost::shared_ptr<Population>& );
 };
 
 #endif /* WORLD_3DF_H_ */

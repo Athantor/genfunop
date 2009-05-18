@@ -40,29 +40,27 @@ class Population
 {
 	public:
 
-		enum SEL_TYPE
-		{
-			S_TOURNAMENT
-		};
-
-		Population( World * w, size_t = 100 );
+		Population( World * w, size_t = 100, size_t = 2 );
 		virtual ~Population();
 
+		const size_t ELITE_SIZE;
+
 		typedef std::vector<shared_ptr<Creature> > creat_t;
+		typedef std::vector<double > creatfitdict_t;
+
+		virtual void add_creature(const Creature&);
 
 		virtual double Evaluate_fitness();
 
 		const World * get_world() const;
 		const creat_t& get_creatures() const;
-
-		virtual boost::shared_ptr<Population> perform_selection( SEL_TYPE = S_TOURNAMENT );
+		const creatfitdict_t& get_creatures_fdict() const;
 
 	protected:
 
-		boost::shared_ptr<Population> tournament_selection(size_t = 2);
-
 		World * world;
 		creat_t creats;
+		creatfitdict_t fitdict;
 };
 
 #endif /* POPULATION_H_ */
