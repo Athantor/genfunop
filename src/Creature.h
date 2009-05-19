@@ -22,6 +22,8 @@
 #include "Population.h"
 #include "Chromosome.h"
 
+extern inline uint64_t frand( uint64_t );
+
 class Chromosome;
 class Population;
 class Creature : boost::less_than_comparable<Creature>, boost::less_than_comparable<Creature, boost::shared_ptr<
@@ -30,7 +32,6 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 	public:
 		Creature( Population *, size_t = 1 );
 		virtual ~Creature();
-
 
 		typedef std::vector<boost::shared_ptr<Chromosome> > chroms_t;
 		typedef std::pair<double, double> domain_t;
@@ -44,6 +45,9 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 
 		void kill( bool = true );
 		bool is_dead() const;
+
+		bool is_elite() const;
+		void set_elite( bool );
 
 		bool operator<( const Creature& ) const;
 		bool operator<( const boost::shared_ptr<Creature>& ) const;
@@ -64,6 +68,10 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 			return SERIALNO;
 		}
 
+		virtual void make_sweet_sweet_love( Creature &, size_t = frand(CHROMSIZE - 1) );
+		virtual size_t mutate( double );
+		virtual void inverse( size_t, size_t );
+
 	protected:
 
 		double make_fitness();
@@ -76,6 +84,7 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 		Population* pntpop;
 
 		bool dead; ///< denotes if creature is part of next generation
+		bool elite;
 		const uint64_t SERIALNO;
 
 	private:
@@ -83,3 +92,4 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 };
 
 #endif /* CREATURE_H_ */
+

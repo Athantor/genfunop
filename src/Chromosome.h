@@ -17,9 +17,23 @@
 #include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 
-static inline uint64_t frand( uint64_t max = RAND_MAX )
+#include "Population.h" // probability
+
+inline uint64_t frand( uint64_t max = RAND_MAX )
 {
 	return static_cast<double> (rand()) / ((static_cast<double> (RAND_MAX) + 1.0) / (static_cast<double> (max)));
+}
+
+inline bool probability( double p )
+{
+	double prob = p;
+
+	if(p < (0 + DBL_EPSILON))
+		prob = 0.0;
+	if(p > (1 - DBL_EPSILON))
+		prob = 1.0;
+
+	return frand(RAND_MAX) < (prob * RAND_MAX);
 }
 
 class Chromosome
@@ -46,6 +60,10 @@ class Chromosome
 
 		gene_t get_allele(size_t = 0, size_t = 0) const;
 		gene_t get_whole_chrom(size_t = 0) const;
+
+		void crossover(boost::shared_ptr<Chromosome> &, size_t);
+		size_t mutate(double);
+		void inverse(size_t, size_t);
 
 		const genes_t& get_genes() const;
 

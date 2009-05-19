@@ -19,20 +19,8 @@
 
 #include "World.h"
 #include "Creature.h"
-#include "Chromosome.h" // frand
 using boost::shared_ptr;
 
-inline bool probability( double p = 0.5 )
-{
-	double prob = p;
-
-	if(p < (0 + DBL_EPSILON))
-		prob = 0.0;
-	if(p > (1 - DBL_EPSILON))
-		prob = 1.0;
-
-	return frand(100) < (prob * 100.0);
-}
 
 class Creature;
 class World;
@@ -49,6 +37,10 @@ class Population
 		typedef std::vector<double > creatfitdict_t;
 
 		virtual void add_creature(const Creature&);
+
+		virtual void breed_creatures(size_t, size_t, size_t);
+		virtual size_t mutate( size_t, double);
+		virtual void inverse(size_t, size_t, size_t);
 
 		virtual double Evaluate_fitness();
 

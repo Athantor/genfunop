@@ -55,7 +55,9 @@ class World
 			oldpops.push_back(pops);
 
 			pops.clear();
-			pops = pop;
+		//	pops = pop_t(pop.size());
+			//std::copy(pop.begin(), pop.end(), pops.begin());
+
 		}
 
 		virtual fitfun_t get_fitfun() const
@@ -75,6 +77,9 @@ class World
 		virtual void perform_selection( boost::shared_ptr<Population>&,  boost::shared_ptr<Population>& , SEL_TYPE = S_TOURNAMENT ) = 0;
 		virtual void tournament_selection( boost::shared_ptr<Population>&, boost::shared_ptr<Population>& ) = 0;
 		virtual void save_elite( shared_ptr<Population>& , boost::shared_ptr<Population>& ) = 0;
+		virtual void breed(shared_ptr<Population>& , boost::shared_ptr<Population>& ) = 0;
+		virtual void mutate(shared_ptr<Population>& , boost::shared_ptr<Population>& ) = 0;
+		virtual void inverse(shared_ptr<Population>& , boost::shared_ptr<Population>& ) = 0;
 
 		pop_t pops;
 		oldpop_t oldpops;

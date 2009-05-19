@@ -49,11 +49,11 @@ double Creature::get_phenotype( size_t chrom, size_t gene, size_t off ) const
 double Creature::Evaluate_fitness()
 {
 	if(!pntpop)
-			return 0;
+		return 0;
 
-		const World* wld = pntpop->get_world();
-		if(!wld)
-			return 0;
+	const World* wld = pntpop->get_world();
+	if(!wld)
+		return 0;
 
 	for(size_t h = 0; h < chroms.size(); ++h)
 	{
@@ -99,7 +99,7 @@ double Creature::make_fitness()
 
 }
 
-void Creature::kill(bool k)
+void Creature::kill( bool k )
 {
 	dead = k;
 }
@@ -108,17 +108,68 @@ bool Creature::is_dead() const
 	return dead;
 }
 
-bool Creature::operator<(const Creature& cr) const
+bool Creature::operator<( const Creature& cr ) const
 {
 	return fitness < cr.fitness;
 }
 
-bool Creature::operator<( const boost::shared_ptr<Creature>& ptr) const
+bool Creature::operator<( const boost::shared_ptr<Creature>& ptr ) const
 {
 	return fitness < ptr->fitness;
 }
 
-bool Creature::operator>( const boost::shared_ptr<Creature>& ptr) const
+bool Creature::operator>( const boost::shared_ptr<Creature>& ptr ) const
 {
 	return fitness > ptr->fitness;
+}
+
+bool Creature::is_elite() const
+{
+	return elite;
+}
+
+void Creature::set_elite( bool e )
+{
+	elite = e;
+}
+
+void Creature::make_sweet_sweet_love( Creature & mate, size_t xpnt )
+{
+	if(chroms.size() != mate.chroms.size())
+	{
+		throw std::runtime_error("Mate has wrong number of chromosomes! Sick!");
+	}
+
+	for(chroms_t::iterator it = chroms.begin(); it != chroms.end(); ++it)
+	{
+		(*it)->crossover(mate.chroms[std::distance(chroms.begin(), it)], xpnt);
+	}
+
+	fitness = make_fitness();
+	mate.fitness = make_fitness();
+}
+
+size_t Creature::mutate( double prob )
+{
+	size_t flipctr = 0;
+
+	for(chroms_t::iterator it = chroms.begin(); it != chroms.end(); ++it)
+	{
+		flipctr += (*it)->mutate(prob);
+	}
+
+	if(flipctr)
+		fitness = make_fitness();
+
+	return flipctr;
+}
+
+void Creature::inverse( size_t ip1, size_t ip2 )
+{
+	for(chroms_t::iterator it = chroms.begin(); it != chroms.end(); ++it)
+	{
+		(*it)->inverse(ip1, ip2);
+	}
+
+	fitness = make_fitness();
 }

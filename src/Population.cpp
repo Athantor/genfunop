@@ -47,7 +47,6 @@ const Population::creat_t& Population::get_creatures() const
 	return creats;
 }
 
-
 const Population::creatfitdict_t & Population::get_creatures_fdict() const
 {
 	return fitdict;
@@ -59,4 +58,19 @@ void Population::add_creature( const Creature& crt )
 	creats.push_back(nc);
 
 	fitdict.push_back(nc->get_fitness());
+}
+
+void Population::breed_creatures( size_t c1, size_t c2, size_t x )
+{
+	creats.at(c1) -> make_sweet_sweet_love(*creats.at(c2), x);
+}
+
+size_t Population::mutate( size_t cr, double prob )
+{
+	return creats.at(cr)->mutate(prob);
+}
+
+void Population::inverse( size_t cr, size_t ip1, size_t ip2 )
+{
+	Population::creats.at(cr)->inverse(ip1, ip2);
 }

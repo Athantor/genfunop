@@ -71,8 +71,14 @@ void World_3df::tng()
 		boost::shared_ptr<Population> newpop(new Population(this, 0, (*it)->ELITE_SIZE));
 		save_elite(*it, newpop);
 		perform_selection(*it, newpop);
+		breed(*it, newpop);
+		mutate(*it, newpop);
+		inverse(*it, newpop);
 
+		newpops.push_back(newpop);
 	}
+
+	swap_pop(newpops);
 }
 
 void World_3df::perform_selection( boost::shared_ptr<Population>& src, boost::shared_ptr<Population>& dst, SEL_TYPE sel )
@@ -95,16 +101,10 @@ void World_3df::perform_selection( boost::shared_ptr<Population>& src, boost::sh
 void World_3df::tournament_selection( boost::shared_ptr<Population>& src, boost::shared_ptr<Population>& dst )
 {
 	//assumes that elite has been saved before this
-	const size_t start = dst->get_creatures().size();
+	//const size_t start = dst->get_creatures().size();
 	const size_t stop = src->get_creatures().size();
 
 	(*get_log()) << "Selekcja turniejowa...";
-
-	std::vector<uint64_t> srl(start);
-	for(size_t i = 0; i < start; ++i)
-	{
-		srl.push_back(dst->get_creatures()[0]->get_serial_no());
-	}
 
 	/*
 	 * Creates array with three random indexes, then array with  fitness values of creatures t corresponding
@@ -130,7 +130,7 @@ void World_3df::tournament_selection( boost::shared_ptr<Population>& src, boost:
 			tmpc = src->get_creatures()[idx[dist]];
 			idxxx = idx[dist];
 
-		} while(std::find(srl.begin(), srl.end(), tmpc->get_serial_no()) != srl.end());
+		} while(tmpc->is_elite());
 
 		dst->add_creature(*tmpc);
 
@@ -159,6 +159,7 @@ void World_3df::save_elite( shared_ptr<Population>& src, boost::shared_ptr<Popul
 				+ "]: x1 = " + tmps[dist]->get_phenotype(0, 0, 0) + "; x2 = " + tmps[dist]->get_phenotype(0, 0,
 				tmps[dist]->get_chroms()[0]->ALLELE_SIZE) + "; fitness: " + tmps[dist]-> get_fitness();
 
+		tmps[dist]->set_elite(true);
 		dst->add_creature(*tmps[dist]);
 
 		tmps.erase(tmps.begin() + dist);
@@ -168,3 +169,84 @@ void World_3df::save_elite( shared_ptr<Population>& src, boost::shared_ptr<Popul
 	(*get_log()) << "Już";
 }
 
+void World_3df::breed( shared_ptr<Population>&, boost::shared_ptr<Population>& dst )
+{
+
+	(*get_log()) << "Krzyżowanie...";
+
+	/*
+	 * First  ELITE_SIZE is elite, so we live it alone
+	 *
+	 * If crits count isn't even, we leave one out
+	 */
+	size_t i = dst->ELITE_SIZE;
+	while(i < (dst->get_creatures().size() - 1))
+	{
+		double m1 = dst->get_creatures()[i]->get_fitness(), m2 = dst->get_creatures()[i + 1]->get_fitness();
+		size_t xpnt = frand(CHROMSIZE - 1);
+		dst->breed_creatures(i, i + 1, xpnt);
+
+		(*get_log()) << util::logging::Msg("... [") + static_cast<long long> (i) + "]x[" + static_cast<long long> (i
+				+ 1) + "]@" + static_cast<long long> (xpnt) + " = {f1: " + m1 + " -> "
+				+ dst->get_creatures()[i]->get_fitness() + "}x{f2: " + m2 + " -> "
+				+ dst->get_creatures()[i + 1]->get_fitness() + "}";
+		i += 2;
+	}
+
+	(*get_log()) << "Już";
+}
+
+void World_3df::mutate( shared_ptr<Population>&, boost::shared_ptr<Population>& dst )
+{
+	const double prob = 0.0005;
+
+	(*get_log()) << util::logging::Msg("Mutowanie z p_m = ") + prob + "...";
+
+	size_t mcc = 0;
+	for(size_t i = dst->ELITE_SIZE; i < dst->get_creatures().size(); ++i)
+	{
+		double m1 = dst->get_creatures()[i]->get_fitness();
+		size_t mc = dst->mutate(i, prob);
+		double m2 = dst->get_creatures()[i]->get_fitness();
+
+		(*get_log()) << util::logging::Msg("... Stwór @ [") + static_cast<long long> (i) + "] zaliczył "
+				+ static_cast<long long> (mc) + " mutacji {" + m1 + " -> " + m2 + "}";
+		mcc += mc;
+
+	}
+	(*get_log()) << util::logging::Msg("... W sumie ") + static_cast<long long> (mcc) + " mutacji";
+
+	(*get_log()) << "Już";
+}
+
+void World_3df::inverse( shared_ptr<Population>&, boost::shared_ptr<Population>& dst )
+{
+	const double prob = 0.0001;
+
+	(*get_log()) << util::logging::Msg("Inwersja z p_i = ") + prob + "...";
+
+	size_t mcc = 0, mccc = 0;
+	for(size_t i = dst->ELITE_SIZE; i < dst->get_creatures().size(); ++i)
+	{
+		if(probability(prob))
+		{
+			double m1 = dst->get_creatures()[i]->get_fitness();
+			size_t p1 = frand(CHROMSIZE / 2 - 1), p2 = (CHROMSIZE / 2 + 1) + frand(CHROMSIZE / 2 - 1);
+
+			dst->inverse(i, p1, p2);
+
+			double m2 = dst->get_creatures()[i]->get_fitness();
+
+			(*get_log()) << util::logging::Msg("... Stwór @ [") + static_cast<long long> (i)
+					+ "] zaliczył inwersję na " + static_cast<long long> (p2 - p1) + " genach między "
+					+ static_cast<long long> (p1) + " a " + static_cast<long long> (p2) + " {" + m1 + " -> " + m2 + "}";
+
+			mcc++;
+			mccc+= p2 - p1;
+		}
+
+	}
+	(*get_log()) << util::logging::Msg("... W sumie ") + static_cast<long long> (mcc) + " inwersji na " + static_cast<long long> (mccc) + " genach";
+
+	(*get_log()) << "Już";
+}

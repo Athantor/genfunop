@@ -76,7 +76,7 @@ Chromosome::genes_t::value_type Chromosome::del_gene( size_t chromno )
 	return ret;
 }
 
-Chromosome::gene_t Chromosome::get_allele( size_t gene , size_t bstart ) const
+Chromosome::gene_t Chromosome::get_allele( size_t gene, size_t bstart ) const
 {
 	gene_t tmp(std::string(ALLELE_SIZE, '1'));
 	tmp <<= bstart;
@@ -86,7 +86,7 @@ Chromosome::gene_t Chromosome::get_allele( size_t gene , size_t bstart ) const
 	return tmp;
 }
 
-Chromosome::gene_t Chromosome::get_whole_chrom(size_t  g) const
+Chromosome::gene_t Chromosome::get_whole_chrom( size_t g ) const
 {
 	return genes[g];
 }
@@ -96,5 +96,51 @@ const Chromosome::genes_t & Chromosome::get_genes() const
 	return genes;
 }
 
+void Chromosome::crossover( boost::shared_ptr<Chromosome> & matechrom, size_t xpnt )
+{
+	if(genes.size() != matechrom->genes.size())
+		throw std::runtime_error("Mate is frome different spiecies! Ewwww! Gene count in chromosome doesn't match!");
 
+	for(genes_t::iterator it = genes.begin(); it != genes.end(); ++it)
+	{
+		for(size_t i = xpnt; i < CHROMOSOME_SIZE; ++i)
+		{
+			bool tmp = matechrom->genes[std::distance(genes.begin(), it)][i];
+			matechrom->genes[std::distance(genes.begin(), it)][i] = (*it)[i];
+			(*it)[i] = tmp;
+		}
+	}
+}
 
+size_t Chromosome::mutate( double prob )
+{
+	size_t flipctr = 0;
+	for(genes_t::iterator it = genes.begin(); it != genes.end(); ++it)
+	{
+		for(size_t i = 0; i < CHROMOSOME_SIZE; ++i)
+		{
+			if(probability(prob))
+			{
+				it->flip(i);
+				flipctr++;
+			}
+		}
+	}
+
+	return flipctr;
+}
+
+void Chromosome::inverse( size_t ip1, size_t ip2 )
+{
+	for(genes_t::iterator it = genes.begin(); it != genes.end(); ++it)
+	{
+		for(size_t i = ip1; i < ip2; ++i)
+		{
+			size_t ctr = i - ip1;
+
+			bool tmp = (*it)[i];
+			(*it)[i] = (*it)[ (ip2-1) - i];
+			(*it)[ (ip2-1) - i] = tmp;
+		}
+	}
+}

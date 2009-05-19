@@ -42,6 +42,9 @@ class World_3df : public World
 		virtual void perform_selection( boost::shared_ptr<Population>&,  boost::shared_ptr<Population>&, SEL_TYPE = S_TOURNAMENT );
 		virtual void tournament_selection( boost::shared_ptr<Population>&, boost::shared_ptr<Population>& ) ;
 		virtual void save_elite( shared_ptr<Population>& , boost::shared_ptr<Population>& );
+		virtual void breed(shared_ptr<Population>& , boost::shared_ptr<Population>& ) ;
+		virtual void mutate(shared_ptr<Population>& , boost::shared_ptr<Population>& );
+		virtual void inverse(shared_ptr<Population>& , boost::shared_ptr<Population>& ) ;
 };
 
 #endif /* WORLD_3DF_H_ */
