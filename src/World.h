@@ -38,7 +38,7 @@ class World
 			S_TOURNAMENT
 		};
 
-		virtual double Evaluate_fitness() = 0;
+		virtual double Evaluate_fitness(size_t) = 0;
 
 		virtual const pop_t& Get_pop()
 		{

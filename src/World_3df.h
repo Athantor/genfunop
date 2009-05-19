@@ -14,10 +14,11 @@
 #include <iterator>
 #include <utility>
 #include <algorithm>
+#include <functional>
 
 #include <boost/any.hpp>
 #include <boost/shared_ptr.hpp>
-
+#include <boost/bind.hpp>
 
 
 #include "World.h"
@@ -30,7 +31,7 @@ class World_3df : public World
 		World_3df( size_t = 1, size_t = 100 );
 		virtual ~World_3df();
 
-		virtual double Evaluate_fitness();
+		virtual double Evaluate_fitness(size_t);
 		//virtual fitfun_t get_fitfun() const;
 
 		virtual void tng();

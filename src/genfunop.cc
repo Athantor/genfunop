@@ -48,8 +48,18 @@ int main( int argc, char **argv )
 	}
 
 	boost::shared_ptr<World> world(new World_3df(1, pops));
-	world->Evaluate_fitness();
+
+	*(world->get_log()) << (std::string(60, '=') + " START ===");
+
+	world->Evaluate_fitness(0);
+
+	for(size_t gens = 0; gens < geners; ++gens)
+	{
+		world->tng();
+		world->Evaluate_fitness(gens+1);
+	}
 
 
+	*(world->get_log()) << (std::string(60, '=') + "  STOP ===");
 
 }

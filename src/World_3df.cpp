@@ -13,7 +13,7 @@ World_3df::World_3df( size_t ps, size_t popsize )
 
 	for(size_t i = 0; i < ps; ++i)
 	{
-		pops.push_back(boost::shared_ptr<Population>(new Population(this, popsize, std::ceil(popsize * 0.05))));
+		pops.push_back(boost::shared_ptr<Population>(new Population(this, popsize)));
 	}
 
 }
@@ -39,7 +39,7 @@ double World_3df::fun3d( const std::vector<any>& args )
  return &fun3d;
  }*/
 
-double World_3df::Evaluate_fitness()
+double World_3df::Evaluate_fitness( size_t genno )
 {
 	double ret = 0, tmp = 0;
 	size_t ctr = 0;
@@ -47,9 +47,9 @@ double World_3df::Evaluate_fitness()
 	{
 		tmp = (*it)->Evaluate_fitness();
 
-		(*get_log()) << util::logging::Msg(std::string(15, '-') + " Fitnes populacji nr")
-				+ static_cast<long long> (ctr) + " (" + static_cast<long long> ((*it)->get_creatures().size())
-				+ ")  = " + tmp;
+		(*get_log()) << util::logging::Msg(std::string(15, '-')) + "[" + static_cast<long long> (genno)
+				+ "]: Fitnes populacji nr " + static_cast<long long> (ctr) + " ("
+				+ static_cast<long long> ((*it)->get_creatures().size()) + ")  = " + tmp;
 
 		ctr++;
 		ret += tmp;
@@ -67,14 +67,18 @@ void World_3df::tng()
 
 	for(pop_t::iterator it = pops.begin(); it != pops.end(); ++it)
 	{
-		//boost::shared_ptr<Population> selpop;
+
+		boost::shared_ptr<Population> newpop(new Population(this, 0, (*it)->ELITE_SIZE));
+		save_elite(*it, newpop);
+		perform_selection(*it, newpop);
+
 	}
 }
 
 void World_3df::perform_selection( boost::shared_ptr<Population>& src, boost::shared_ptr<Population>& dst, SEL_TYPE sel )
 {
 
-	save_elite(src, dst);
+	//save_elite(src, dst);
 
 	switch(sel)
 	{
@@ -90,23 +94,52 @@ void World_3df::perform_selection( boost::shared_ptr<Population>& src, boost::sh
 
 void World_3df::tournament_selection( boost::shared_ptr<Population>& src, boost::shared_ptr<Population>& dst )
 {
+	//assumes that elite has been saved before this
 	const size_t start = dst->get_creatures().size();
 	const size_t stop = src->get_creatures().size();
+
+	(*get_log()) << "Selekcja turniejowa...";
+
+	std::vector<uint64_t> srl(start);
+	for(size_t i = 0; i < start; ++i)
+	{
+		srl.push_back(dst->get_creatures()[0]->get_serial_no());
+	}
 
 	/*
 	 * Creates array with three random indexes, then array with  fitness values of creatures t corresponding
 	 * indexes, then finds maximum element in that, computes index value from distance and finally ads the creature
+	 *
+	 * Checks if drawn creature doesn't belong to elite
 	 */
-	for(size_t i = 0; i < stop - start; ++i)
+	for(size_t i = 0; i < stop; ++i)
 	{
 		const size_t WAT = 3; //< for control
+		boost::shared_ptr<Creature> tmpc;
+		size_t dist = 0;
+		size_t idxxx;
 
-		size_t idx[WAT] = { (start + frand(stop - start)), (start + frand(stop - start)), (start + frand(stop - start)) };
-		double ivals[WAT] = { src->get_creatures_fdict()[idx[0]], src->get_creatures_fdict()[idx[1]],
-				src->get_creatures_fdict()[idx[2]] };
+		do
+		{
+			size_t idx[WAT] = { frand(stop), frand(stop), frand(stop) };
 
-		dst->add_creature(*(src->get_creatures()[idx[std::distance(ivals, std::max_element(ivals, ivals + WAT))]]));
+			double ivals[WAT] = { src->get_creatures_fdict()[idx[0]], src->get_creatures_fdict()[idx[1]],
+					src->get_creatures_fdict()[idx[2]] };
+
+			dist = std::distance(ivals, std::max_element(ivals, ivals + WAT));
+			tmpc = src->get_creatures()[idx[dist]];
+			idxxx = idx[dist];
+
+		} while(std::find(srl.begin(), srl.end(), tmpc->get_serial_no()) != srl.end());
+
+		dst->add_creature(*tmpc);
+
+		(*get_log()) << util::logging::Msg("...Zachowano stwora z pozycji [") + static_cast<long long> (idxxx)
+				+ "]: x1 = " + tmpc->get_phenotype(0, 0, 0) + "; x2 = " + tmpc->get_phenotype(0, 0,
+				tmpc->get_chroms()[0]->ALLELE_SIZE) + "; fitness: " + tmpc->get_fitness();
+
 	}
+	(*get_log()) << "Już...";
 
 }
 
@@ -115,14 +148,23 @@ void World_3df::save_elite( shared_ptr<Population>& src, boost::shared_ptr<Popul
 	Population::creatfitdict_t tmp(src->get_creatures_fdict());
 	Population::creat_t tmps(src->get_creatures());
 
+	(*get_log()) << "Zachowuję elity...";
+
 	for(size_t i = 0; i < src->ELITE_SIZE; ++i)
 	{
 		Population::creatfitdict_t::iterator mxit = max_element(tmp.begin(), tmp.end());
 		size_t dist = std::distance(tmp.begin(), mxit);
 
+		(*get_log()) << util::logging::Msg("...Zachowano stwora z pozycji [") + static_cast<long long> (dist)
+				+ "]: x1 = " + tmps[dist]->get_phenotype(0, 0, 0) + "; x2 = " + tmps[dist]->get_phenotype(0, 0,
+				tmps[dist]->get_chroms()[0]->ALLELE_SIZE) + "; fitness: " + tmps[dist]-> get_fitness();
+
 		dst->add_creature(*tmps[dist]);
+
 		tmps.erase(tmps.begin() + dist);
 		tmp.erase(tmp.begin() + dist);
 	}
+
+	(*get_log()) << "Już";
 }
 

@@ -9,8 +9,10 @@
 
 #include "Creature.h"
 
+uint64_t Creature::SERIALCTR = 0;
+
 Creature::Creature( Population * pop, size_t chromnom ) :
-	pntpop(pop), dead(false)
+	pntpop(pop), dead(false), SERIALNO(++Creature::SERIALCTR)
 {
 	for(size_t i = 0; i < chromnom; ++i)
 	{
@@ -120,4 +122,3 @@ bool Creature::operator>( const boost::shared_ptr<Creature>& ptr) const
 {
 	return fitness > ptr->fitness;
 }
-

@@ -14,6 +14,7 @@
 #include <utility>
 #include <cmath>
 #include <cstddef>
+#include <stdint.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/operators.hpp>
@@ -29,6 +30,7 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 	public:
 		Creature( Population *, size_t = 1 );
 		virtual ~Creature();
+
 
 		typedef std::vector<boost::shared_ptr<Chromosome> > chroms_t;
 		typedef std::pair<double, double> domain_t;
@@ -52,6 +54,16 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 			return fitness;
 		}
 
+		const chroms_t& get_chroms() const
+		{
+			return chroms;
+		}
+
+		uint64_t get_serial_no() const
+		{
+			return SERIALNO;
+		}
+
 	protected:
 
 		double make_fitness();
@@ -64,6 +76,10 @@ class Creature : boost::less_than_comparable<Creature>, boost::less_than_compara
 		Population* pntpop;
 
 		bool dead; ///< denotes if creature is part of next generation
+		const uint64_t SERIALNO;
+
+	private:
+		static uint64_t SERIALCTR;
 };
 
 #endif /* CREATURE_H_ */
