@@ -105,9 +105,10 @@ void Chromosome::crossover( boost::shared_ptr<Chromosome> & matechrom, size_t xp
 	{
 		for(size_t i = xpnt; i < CHROMOSOME_SIZE; ++i)
 		{
-			bool tmp = matechrom->genes[std::distance(genes.begin(), it)][i];
-			matechrom->genes[std::distance(genes.begin(), it)][i] = (*it)[i];
-			(*it)[i] = tmp;
+			bool tmp= (*it)[i];
+			(*it)[i] = matechrom->genes[std::distance(genes.begin(), it)][i];
+			matechrom->genes[std::distance(genes.begin(), it)][i] = tmp;
+
 		}
 	}
 }

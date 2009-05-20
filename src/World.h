@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <cstddef>
+#include <iostream>
 
 #include <boost/any.hpp>
 #include <boost/shared_ptr.hpp>
@@ -79,7 +80,6 @@ class World
 		fitfun_t fitfun;
 
 		boost::shared_ptr<util::logging::File_logger> LOGFILE;
-
 };
 
 #endif /* WORLD_H_ */

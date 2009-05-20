@@ -54,7 +54,7 @@ namespace util
 				Msg operator+(long long);
 				Msg operator+(double);
 
-
+				operator std::string() const;
 
 		protected:
 				const std::string msg_txt;

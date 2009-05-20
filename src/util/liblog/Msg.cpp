@@ -72,6 +72,11 @@ namespace util
 			return operator+( boost::lexical_cast<std::string>(val) );
 		}
 
+		Msg::operator std::string() const
+		{
+			return getMsg_txt();
+		}
+
 
 	}
 

@@ -53,6 +53,10 @@ double World_3df::Evaluate_fitness( size_t genno )
 				+ "]: Fitnes populacji nr " + static_cast<long long> (ctr) + " ("
 				+ static_cast<long long> ((*it)->get_creatures().size()) + ")  = " + tmp;
 
+		std::cout << (util::logging::Msg(std::string(15, '-')) + "[" + static_cast<long long> (genno)
+				+ "]: Fitnes populacji nr " + static_cast<long long> (ctr) + " ("
+				+ static_cast<long long> ((*it)->get_creatures().size()) + ")  = " + tmp).getMsg_txt() << std::endl;
+
 		ctr++;
 		ret += tmp;
 
@@ -199,7 +203,7 @@ void World_3df::breed( shared_ptr<Population>&, boost::shared_ptr<Population>& d
 
 void World_3df::mutate( shared_ptr<Population>&, boost::shared_ptr<Population>& dst )
 {
-	const double prob = 0.0005;
+	const double prob = 0.005;
 
 	(*get_log()) << util::logging::Msg("Mutowanie z p_m = ") + prob + "...";
 
@@ -222,7 +226,7 @@ void World_3df::mutate( shared_ptr<Population>&, boost::shared_ptr<Population>& 
 
 void World_3df::inverse( shared_ptr<Population>&, boost::shared_ptr<Population>& dst )
 {
-	const double prob = 0.0001;
+	const double prob = 0.001;
 
 	(*get_log()) << util::logging::Msg("Inwersja z p_i = ") + prob + "...";
 
@@ -242,12 +246,15 @@ void World_3df::inverse( shared_ptr<Population>&, boost::shared_ptr<Population>&
 					+ "] zaliczył inwersję na " + static_cast<long long> (p2 - p1) + " genach między "
 					+ static_cast<long long> (p1) + " a " + static_cast<long long> (p2) + " {" + m1 + " -> " + m2 + "}";
 
+			std::cout << "!! Inwersja na " << i << std::endl;
+
 			mcc++;
-			mccc+= p2 - p1;
+			mccc += p2 - p1;
 		}
 
 	}
-	(*get_log()) << util::logging::Msg("... W sumie ") + static_cast<long long> (mcc) + " inwersji na " + static_cast<long long> (mccc) + " genach";
+	(*get_log()) << util::logging::Msg("... W sumie ") + static_cast<long long> (mcc) + " inwersji na "
+			+ static_cast<long long> (mccc) + " genach";
 
 	(*get_log()) << "Już";
 }

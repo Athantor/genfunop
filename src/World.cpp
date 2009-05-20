@@ -25,6 +25,4 @@ void World::swap_pop( pop_t& pop )
 
 	pops.clear();
 	pops = pop_t(pop);
-	//std::copy(pop.begin(), pop.end(), pops.begin());
-
 }
