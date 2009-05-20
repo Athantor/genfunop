@@ -50,15 +50,8 @@ class World
 			return oldpops;
 		}
 
-		virtual void swap_pop( pop_t& pop )
-		{
-			oldpops.push_back(pops);
+		virtual void swap_pop( pop_t& pop );
 
-			pops.clear();
-		//	pops = pop_t(pop.size());
-			//std::copy(pop.begin(), pop.end(), pops.begin());
-
-		}
 
 		virtual fitfun_t get_fitfun() const
 		{

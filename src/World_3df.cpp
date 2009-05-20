@@ -7,6 +7,8 @@
 
 #include "World_3df.h"
 
+#include <iostream>
+
 World_3df::World_3df( size_t ps, size_t popsize )
 {
 	fitfun = &fun3d;
@@ -63,12 +65,13 @@ double World_3df::Evaluate_fitness( size_t genno )
 void World_3df::tng()
 {
 
-	pop_t newpops(pops.size());
+	pop_t newpops;
 
 	for(pop_t::iterator it = pops.begin(); it != pops.end(); ++it)
 	{
 
 		boost::shared_ptr<Population> newpop(new Population(this, 0, (*it)->ELITE_SIZE));
+
 		save_elite(*it, newpop);
 		perform_selection(*it, newpop);
 		breed(*it, newpop);
@@ -100,8 +103,6 @@ void World_3df::perform_selection( boost::shared_ptr<Population>& src, boost::sh
 
 void World_3df::tournament_selection( boost::shared_ptr<Population>& src, boost::shared_ptr<Population>& dst )
 {
-	//assumes that elite has been saved before this
-	//const size_t start = dst->get_creatures().size();
 	const size_t stop = src->get_creatures().size();
 
 	(*get_log()) << "Selekcja turniejowa...";
@@ -112,7 +113,7 @@ void World_3df::tournament_selection( boost::shared_ptr<Population>& src, boost:
 	 *
 	 * Checks if drawn creature doesn't belong to elite
 	 */
-	for(size_t i = 0; i < stop; ++i)
+	for(size_t i = 0; i < stop - src->ELITE_SIZE; ++i)
 	{
 		const size_t WAT = 3; //< for control
 		boost::shared_ptr<Creature> tmpc;
